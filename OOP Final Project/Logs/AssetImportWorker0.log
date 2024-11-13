@@ -438,3 +438,12 @@ Start importing Assets/Course Library/Obstacles/Prop_Cone_01.prefab using Guid(4
  -> (artifact id: '33b49ec5935bf0895d02e4a6c3516d21') in 0.116059 seconds
 Number of updated asset objects reloaded before import = 0
 Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 12976.451509 seconds.
+  path: ProjectSettings/TagManager.asset
+  artifactKey: Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing ProjectSettings/TagManager.asset using Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b) [PhysX] Initialized MultithreadedTaskDispatcher with 8 workers.
+ -> (artifact id: 'a2ed4f3eafcc2bc862c440eaeb831565') in 0.038471 seconds
+Number of updated asset objects reloaded before import = 0
+Number of asset objects unloaded after import = 0
