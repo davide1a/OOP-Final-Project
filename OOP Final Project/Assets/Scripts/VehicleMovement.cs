@@ -15,17 +15,23 @@ public class VehicleMovement : MonoBehaviour
     [SerializeField] private float fuelPerMeter;
     [SerializeField] private float stationInterval = 100;
     public TextMeshPro fuelText;
-    [SerializeField] private bool carNeedsFuel = false;
-    private FuelStation fuelStation;
+    [SerializeField] public bool carNeedsFuel = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        fuelStation = GameObject.Find("Fuel Station").GetComponent<FuelStation>();
-    }
 
     // Update is called once per frame
     void Update()
+    {
+        // ABSTRACTION - code moved into method to keep it cleaner
+        MoveVehicle();
+    }
+
+    void LateUpdate()
+    {
+        // ABSTRACTION - code moved into method to keep it cleaner
+        UpdateFuelText();
+    }
+
+    public void MoveVehicle()
     {
         // Move the vehicle forwards, and make it's fuel text follow it.
         if (!carNeedsFuel)
@@ -45,8 +51,7 @@ public class VehicleMovement : MonoBehaviour
             }
         }
     }
-
-    void LateUpdate()
+    public void UpdateFuelText()
     {
         // Update fuel text and make text follow the vehicle
         fuelText.text = Math.Round(currentFuel, 2) + "L";
@@ -62,30 +67,35 @@ public class VehicleMovement : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    public virtual void OnTriggerEnter(Collider other)
     {
         // Each time vehicle passes the station
         if (other.gameObject.CompareTag("Station"))
         {
-            // Stop vehicle if it doesn't have enough fuel to reach the next station
-            if (currentFuel < fuelPerMeter * stationInterval)
-            {
-                carNeedsFuel = true;
-                StartCoroutine("RefillDelay");
-            }
+            CheckForRefuelling();
+        }
+    }
+
+    public void CheckForRefuelling()
+    {
+        // Stop vehicle if it doesn't have enough fuel to reach the next station
+        if (currentFuel < fuelPerMeter * stationInterval && FuelStation.instance.P_stationFuelLevel > 0)
+        {
+            carNeedsFuel = true;
+            StartCoroutine("RefillDelay");
         }
     }
 
     IEnumerator RefillDelay()
     {
         // Pause as though vehicle is filling with fuel
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         // Calculate amount of fuel needed to fill the tank
         float fuelNeeded = maxFuel - currentFuel;
         // Check how much fuel is available at the station
-        float fuelAvailable = fuelStation.P_stationFuelLevel;
-        // Try to take a full take full regardless of what is available
-        fuelStation.P_stationFuelLevel -= fuelNeeded;
+        float fuelAvailable = FuelStation.instance.P_stationFuelLevel;
+        // Try to take a full tank regardless of what is available
+        FuelStation.instance.P_stationFuelLevel -= fuelNeeded;
         // If less than a full fill is available, fill what is available
         if (fuelAvailable < fuelNeeded)
         {
